@@ -41,4 +41,11 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_E798E345306B44128AA751BB1CFE7815 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_7A1BF957E9C446228F4A4DF6DFFAACBF }}
 
-
+      - name: Deploy to Azure Web App
+        run: |
+          az webapp up --name showcar-strapi-app \
+                       --resource-group showcar \
+                       --plan ASP-showcar-848a \
+                       --runtime "NODE|18-lts" \
+                       --src-path . \
+                       --location "Norway East"
