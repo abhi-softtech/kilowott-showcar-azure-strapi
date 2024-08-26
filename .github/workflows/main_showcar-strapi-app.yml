@@ -1,7 +1,4 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
-name: Build and deploy Node.js app to Azure Web App - showcar-strapi-app
+name: Build and Deploy Node.js App to Azure Web App - showcar-strapi-app
 
 on:
   push:
@@ -10,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,45 +24,23 @@ jobs:
           npm run build --if-present
           npm run test --if-present
 
-      - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
+      - name: Install Azure CLI
+        run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
-        with:
-          name: node-app
-          path: release.zip
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write #This is required for requesting the JWT
-
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: node-app
-
-      - name: Unzip artifact for deployment
-        run: unzip release.zip
-      
       - name: Login to Azure
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_D3AEF621DBAC477AA80B3CBA8F12CAC6 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_E798E345306B44128AA751BB1CFE7815 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_7A1BF957E9C446228F4A4DF6DFFAACBF }}
+          allow-no-subscriptions: true
 
-      - name: 'Deploy to Azure Web App'
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: 'showcar-strapi-app'
-          slot-name: 'Production'
-          package: release.zip
-          
+      - name: Deploy to Azure Web App
+        run: |
+          az webapp up --name showcar-strapi-app \
+                       --resource-group MyResourceGroup \
+                       --plan MyAppServicePlan \
+                       --runtime "NODE|18-lts" \
+                       --src-path . \
+                       --location "East US"
