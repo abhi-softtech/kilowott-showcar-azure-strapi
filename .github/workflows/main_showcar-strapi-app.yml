@@ -34,6 +34,5 @@ jobs:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_D3AEF621DBAC477AA80B3CBA8F12CAC6 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_E798E345306B44128AA751BB1CFE7815 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_7A1BF957E9C446228F4A4DF6DFFAACBF }}
-          allow-no-subscriptions: true
 
 
