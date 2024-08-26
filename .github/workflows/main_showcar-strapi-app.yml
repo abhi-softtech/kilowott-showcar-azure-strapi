@@ -49,7 +49,7 @@ jobs:
         run: |
           az webapp deploy --resource-group showcar \
                            --name showcar-strapi-app \
-                           --src-path app.zip \
-                           --slot production
+                           --src-path app.zip 
+                           
 
                            
